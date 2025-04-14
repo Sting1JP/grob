@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -520,10 +518,9 @@ const track2 = document.getElementById('bgTrack2');
 let currentTrack = Math.random() < 0.5 ? track1 : track2;
 let nextTrack = currentTrack === track1 ? track2 : track1;
 
-const EXTRA_NARRATIONS = [];
 
 // 🎙️ Load narration dynamically
-function loadNarrationFiles(count, path, prefix, extras = []) {
+function loadNarrationFiles(count, path, prefix) {
     const audios = [];
 
     for (let i = 1; i <= count; i++) {
@@ -532,20 +529,12 @@ function loadNarrationFiles(count, path, prefix, extras = []) {
         audios.push(audio);
     }
 
-    // Add extra narration files (e.g. user-specific ones)
-    for (const extra of extras) {
-        if (extra.path === path) {
-            const audio = new Audio(`${extra.path}/${extra.file}`);
-            audio.preload = 'auto';
-            audios.push(audio);
-        }
-    }
 
     return audios;
 }
 
 // 🎧 Narration storage
-const narrations = loadNarrationFiles(42, 'narr', 'narr', EXTRA_NARRATIONS); // /narr/narr1.mp3 etc
+const narrations = loadNarrationFiles(42, 'narr', 'narr'); // /narr/narr1.mp3 etc
 const deathNarrations = loadNarrationFiles(28, 'narrdeath', 'narrdeath'); // /narrdeath/narrdeath1.mp3 etc
 
 // 🔁 Active audio reference
@@ -569,7 +558,10 @@ function playRandomNarration() {
     audio.play();
 }
 
+
+
 const initialShipY = 330;
+        
         class Game {
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');
@@ -1316,10 +1308,86 @@ document.getElementById('uselessTips').textContent = tips[Math.floor(Math.random
     localStorage.setItem('grobHighScore', this.highScore);
     this.updateHighScoreDisplay();
 
-    console.log("Sending score:", this.highScore);
 
-    // Send score to PHP
-    // Removed server score submission
+}
+
+if (currentNarration && !currentNarration.paused) {
+    try {
+        currentNarration.pause();
+        currentNarration.currentTime = 0;
+    } catch (err) {
+        console.warn("⚠️ Could not pause narration:", err);
+    }
+}
+clearInterval(narrationInterval);
+currentNarration = null;
+
+// 🚫 Mark that we're in death narration mode
+narrationPausedDueToDeath = true;
+
+if (currentDeathNarration && !currentDeathNarration.paused) {
+    try {
+        currentDeathNarration.pause();
+        currentDeathNarration.currentTime = 0;
+    } catch (err) {
+        console.warn("⚠️ Could not pause previous death narration:", err);
+    }
+}
+currentDeathNarration = null;
+
+const deathAudio = deathNarrations[Math.floor(Math.random() * deathNarrations.length)];
+currentDeathNarration = deathAudio;
+
+deathAudio.onended = () => {
+    currentDeathNarration = null;
+    narrationPausedDueToDeath = false; // ✅ Now allow normal narration again
+};
+
+setTimeout(() => {
+    deathAudio.volume = 1; // Force max volume
+    deathAudio.currentTime = 0; // Optional: restart from beginning just in case
+    deathAudio.play().catch(e => console.warn('💀 Death narration error:', e));
+}, 400);
+
+}
+
+reset() {
+
+    gameOverActive = false;
+
+    setTimeout(() => {
+    restoreMusicSpeedSmoothly();
+}, 200); // small delay helps avoid race conditions
+    musicState = 'restoring';
+    clearMuffle();
+
+    this.obstacles.forEach(obs => obs.element.remove());
+    this.obstacles = [];
+    this.orbs.forEach(orb => orb.element.remove());
+    this.orbs = [];
+
+    this.shipY = initialShipY;
+    this.velocity = 0;
+    this.score = 0;
+    this.gameRunning = true;
+    this.lastObstacleY = 0;
+    this.isHyperspeed = false;
+    this.hyperspeedTimer = 0;
+    this.hyperspeedFadeOut = 0;
+    this.postHyperspeedBuffer = 0;
+
+    this.spaceship.classList.remove('hyperspeed', 'exploding');
+    this.spaceship.style.display = 'block';
+    this.spaceship.style.opacity = this.invisibleActivated ? '0' : '1';
+    this.spaceship.style.top = this.shipY + 'px';
+
+    this.scoreElement.textContent = `Score: ${this.score}`;
+    this.gameOverElement.style.display = 'none';
+
+    this.spawnObstacles();
+    this.spawnOrbs();
+
+    this.setShipTransform({ rotate: 0, scale: this.bigSpriteActivated ? 2 : 1 });
 
     this.explosionDone = true; // reset properly
 

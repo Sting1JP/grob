@@ -523,7 +523,7 @@ let nextTrack = currentTrack === track1 ? track2 : track1;
 const EXTRA_NARRATIONS = [];
 
 // 🎙️ Load narration dynamically
-function loadNarrationFiles(count, path, prefix, extras = []) {
+function loadNarrationFiles(count, path, prefix {
     const audios = [];
 
     for (let i = 1; i <= count; i++) {
@@ -532,20 +532,12 @@ function loadNarrationFiles(count, path, prefix, extras = []) {
         audios.push(audio);
     }
 
-    // Add extra narration files (e.g. user-specific ones)
-    for (const extra of extras) {
-        if (extra.path === path) {
-            const audio = new Audio(`${extra.path}/${extra.file}`);
-            audio.preload = 'auto';
-            audios.push(audio);
-        }
-    }
-
+    
     return audios;
 }
 
 // 🎧 Narration storage
-const narrations = loadNarrationFiles(42, 'narr', 'narr', EXTRA_NARRATIONS); // /narr/narr1.mp3 etc
+const narrations = loadNarrationFiles(42, 'narr', 'narr'); // /narr/narr1.mp3 etc
 const deathNarrations = loadNarrationFiles(28, 'narrdeath', 'narrdeath'); // /narrdeath/narrdeath1.mp3 etc
 
 // 🔁 Active audio reference

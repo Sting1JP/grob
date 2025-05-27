@@ -517,7 +517,6 @@ filter: blur(3px) contrast(120%);
     <div class="highScore">
 </div>
 
-<script src="/trophies/trophies.js"></script>
 
     <script>
 
@@ -717,7 +716,7 @@ updateBombDisplay() {
     this.currentSprite = sprite; // Save the choice
 
     if (sprite.includes('sprite2f')) {
-  unlockTrophy('play_grobette');
+
 }
 }
 
@@ -746,17 +745,17 @@ updateBombDisplay() {
 
         if (this.cheatCode.includes(this.cheatCodeTarget) && !this.cheatActivated) {
             this.activateCheat();
-            unlockTrophy('grob_cheater');
+
         }
 
         if (this.cheatCode.includes(this.cheatCodeTargetBig) && !this.bigSpriteActivated) {
             this.activateBigSpriteCheat();
-            unlockTrophy('grob_cheater');
+  
         }
 
         if (this.cheatCode.includes(this.cheatCodeTargetGhost) && !this.invisibleActivated) {
             this.activateInvisibleCheat();
-            unlockTrophy('grob_cheater');
+   
         }
     });
 }
@@ -1021,13 +1020,13 @@ this.stats.hyperspeedStreak++;
 saveGrobStats(this.stats);
 
 if (this.stats.totalHyperspeeds === 1) {
-  unlockTrophy('hyperspeed_once');
+
 }
 if (this.stats.hyperspeedStreak === 5) {
-  unlockTrophy('hyperspeed_streak_5');
+
 }
 if (this.stats.hyperspeedStreak === 10) {
-  unlockTrophy('hyperspeed_streak_10');
+
 }
 
     this.isHyperspeed = true;
@@ -1174,7 +1173,7 @@ const currentSpeed = this.baseSpeed * speedFactor;
   saveGrobStats(this.stats);
 
   if (this.stats.totalCrashes === 100) {
-    unlockTrophy('wrecking_ball');
+
   }
 
     obs.element.classList.add('break');
@@ -1575,7 +1574,6 @@ this.stats.hyperspeedStreak = 0;
 saveGrobStats(this.stats);
 
 if (this.stats.totalDeaths === 100) {
-  unlockTrophy('hundred_deaths');
 }
 
 }
